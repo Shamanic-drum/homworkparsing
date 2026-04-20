@@ -4,21 +4,19 @@ from datetime import datetime
 
 #список ключевых слов:
 KEYWORDS = ['дизайн', 'фото', 'web', 'python']
-# URL
+
 URL = 'https://habr.com/ru/articles/'
 def fetch_articles(url, keywords):
-    """Парсит статьи и возвращает подходящие по ключевым словам"""
     try:
         # Отправляем запрос
         headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
         }
         response = requests.get(url, headers=headers)
-        response.raise_for_status()  # Проверяем успешность запроса
+        response.raise_for_status()  
 
         # BeautifulSoup
         soup = BeautifulSoup(response.text, 'html.parser')
-        # Находим все статьи (ищем по классу, который содержит превью статьи)
         articles = soup.find_all('article', class_='tm-articles-list__item')
         matching_articles = []
         # поиск
@@ -37,7 +35,7 @@ def fetch_articles(url, keywords):
             # дата
             date_elem = article.find('time')
             if date_elem and date_elem.get('datetime'):
-                date = date_elem['datetime'][:10]  # Берем только дату
+                date = date_elem['datetime'][:10]  
             else:
                 date = datetime.now().strftime('%Y-%m-%d')
             preview_text = ''
@@ -46,7 +44,7 @@ def fetch_articles(url, keywords):
             for p in preview_paragraphs:
                 preview_text += p.text.lower() + ' '
             
-            # текст из тегов (хабов)
+            # текст тегов
             tags = article.find_all('a', class_='tm-tags-list__link')
             for tag in tags:
                 preview_text += tag.text.lower() + ' '
